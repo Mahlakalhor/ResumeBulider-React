@@ -6,7 +6,7 @@ import { RouterProvider } from "react-router/dom";
 import { Hero } from "./pages/Hero";
 import { CreateResume } from "./pages/CreateResume";
 import { Dashboard } from "./pages/Dashboard";
-import { Login } from "./pages/Login";
+import {Login} from "./pages/Login"
 import { SignUp } from "./pages/SignUp";
 
 const router = createBrowserRouter([
