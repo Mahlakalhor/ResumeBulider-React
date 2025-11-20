@@ -1,9 +1,21 @@
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+type LoginFormType = {
+  email: string;
+  password: string;
+};
 
 export const LoginPage = () => {
+  const { register, handleSubmit } = useForm<LoginFormType>();
+  const onSubmit = (data: LoginFormType) => {
+    console.log(data);
+  };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
-      <form className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white"
+      >
         <h1 className="text-gray-900 text-3xl mt-10 font-medium">Login</h1>
         <p className="text-gray-500 text-sm mt-2">Please login to continue</p>
 
@@ -24,6 +36,7 @@ export const LoginPage = () => {
           </svg>
 
           <input
+            {...register("email", { required: true })}
             placeholder="Email id"
             type="email"
             required
@@ -48,6 +61,7 @@ export const LoginPage = () => {
           </svg>
 
           <input
+            {...register("password", { required: true })}
             placeholder="Password"
             type="password"
             required
@@ -56,7 +70,7 @@ export const LoginPage = () => {
         </div>
 
         <div className="mt-4 text-left text-green-500">
-          <button type="reset" className="text-sm">
+          <button type="button" className="text-sm">
             Forget password?
           </button>
         </div>
