@@ -1,9 +1,30 @@
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 export const SignupPage = () => {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    defaultValues: { name: "", email: "", password: "" },
+  });
+  const { mutate } = useMutation({
+    mutationFn: async (newUser) => {
+      const { data } = await axios.post("/api/users/register", {
+        name: newUser.name,
+        email: newUser.email,
+        password: newUser.password,
+      });
+      return data;
+    },
+  });
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <form className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white">
+      <form
+        className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white"
+        onSubmit={handleSubmit(() => {})}
+      >
         <h1 className="text-gray-900 text-3xl mt-10 font-medium">Sign up</h1>
         <p className="text-gray-500 text-sm mt-2">
           Please register to continue
@@ -30,10 +51,10 @@ export const SignupPage = () => {
           <input
             placeholder="Name"
             className="border-none outline-none ring-0 w-full"
-            required
             type="text"
-            name="name"
+            {...register("name", { required: true })}
           />
+          {errors.name && <p>Please enter your Name!</p>}
         </div>
 
         <div className="flex items-center w-full mt-4 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
@@ -57,10 +78,10 @@ export const SignupPage = () => {
           <input
             placeholder="Email id"
             className="border-none outline-none ring-0 w-full"
-            required
             type="email"
-            name="email"
+            {...register("email", { required: true })}
           />
+          {errors.email && <p>Please enter your Email!</p>}
         </div>
 
         <div className="flex items-center mt-4 w-full bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
@@ -84,10 +105,10 @@ export const SignupPage = () => {
           <input
             placeholder="Password"
             className="border-none outline-none ring-0 w-full"
-            required
             type="password"
-            name="password"
+            {...register("password", { required: true })}
           />
+          {errors.password && <p>Please enter your Password!</p>}
         </div>
 
         <div className="mt-4 text-left text-green-500">

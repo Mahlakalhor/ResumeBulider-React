@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import axios from "../api/axios";
+import { useMutation } from "@tanstack/react-query";
+import { emitWarning } from "process";
+
 type LoginFormType = {
   email: string;
   password: string;
@@ -10,10 +14,22 @@ export const LoginPage = () => {
   const onSubmit = (data: LoginFormType) => {
     console.log(data);
   };
+  const { mutate } = useMutation({
+    mutationFn: async (newUser) => {
+      const { data } = await axios.post("/api/users/register", {
+        name: newUser.name,
+        email: newUser.email,
+        password: newUser.password,
+      });
+      return data;
+    },
+  });
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(({ name, email, password }) => {
+          mutate({ name: name, email: email, password: password });
+        })}
         className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white"
       >
         <h1 className="text-gray-900 text-3xl mt-10 font-medium">Login</h1>

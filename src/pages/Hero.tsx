@@ -1,7 +1,7 @@
 import { Feature } from "../components/Feature";
 import { Header } from "../components/Header";
 import { Home } from "../components/Home";
-import TestimonialCard from "../components/TestimonialCard";
+import { TestimonialCard} from "../components/TestimonialCard";
 
 export const Hero = () => {
   return (
@@ -9,7 +9,7 @@ export const Hero = () => {
       <Header />
       <Home />
       <Feature />
-      <TestimonialCard/>
+      <TestimonialCard name={""} username={""} img={""} text={""} />
     </div>
   );
 };
