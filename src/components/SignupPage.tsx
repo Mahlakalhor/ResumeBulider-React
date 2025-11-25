@@ -1,16 +1,27 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import axios from "../api/axios";
+
+type SignupFormValues = {
+  name: string;
+  email: string;
+  password: string;
+};
 
 export const SignupPage = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm({
+  } = useForm<SignupFormValues>({
     defaultValues: { name: "", email: "", password: "" },
   });
+
   const { mutate } = useMutation({
-    mutationFn: async (newUser) => {
+    mutationFn: async (newUser: SignupFormValues) => {
       const { data } = await axios.post("/api/users/register", {
         name: newUser.name,
         email: newUser.email,
@@ -18,12 +29,20 @@ export const SignupPage = () => {
       });
       return data;
     },
+    onSuccess: () => {
+      navigate("/dashboard");
+    },
   });
+
+  const onSubmit = (formData: SignupFormValues) => {
+    mutate(formData);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <form
         className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white"
-        onSubmit={handleSubmit(() => {})}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <h1 className="text-gray-900 text-3xl mt-10 font-medium">Sign up</h1>
         <p className="text-gray-500 text-sm mt-2">
@@ -117,14 +136,12 @@ export const SignupPage = () => {
           </button>
         </div>
 
-        <Link to="/create-resume">
-          <button
-            type="submit"
-            className="mt-2 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity cursor-pointer"
-          >
-            Sign up
-          </button>
-        </Link>
+        <button
+          type="submit"
+          className="mt-2 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity cursor-pointer"
+        >
+          Sign up
+        </button>
 
         <p className="text-gray-500 text-sm mt-3 mb-11">
           Already have an account?

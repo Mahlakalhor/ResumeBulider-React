@@ -1,8 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "../api/axios";
 import { useMutation } from "@tanstack/react-query";
-import { emitWarning } from "process";
 
 type LoginFormType = {
   email: string;
@@ -10,26 +9,42 @@ type LoginFormType = {
 };
 
 export const LoginPage = () => {
-  const { register, handleSubmit } = useForm<LoginFormType>();
-  const onSubmit = (data: LoginFormType) => {
-    console.log(data);
-  };
-  const { mutate } = useMutation({
-    mutationFn: async (newUser) => {
-      const { data } = await axios.post("/api/users/register", {
-        name: newUser.name,
-        email: newUser.email,
-        password: newUser.password,
-      });
-      return data;
+  const navigate = useNavigate();
+
+  const { register, handleSubmit } = useForm<LoginFormType>({
+    defaultValues: {
+      email: "",
+      password: "",
     },
   });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (loginUser: LoginFormType) => {
+      const { data } = await axios.post("/api/users/login", loginUser);
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      navigate("/dashboard");
+    },
+    onError: (error) => {
+      console.log(error);
+      alert("Invalid Email or Password");
+    },
+  });
+
+  const onSubmit = (data: LoginFormType) => {
+    mutate(data);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
       <form
-        onSubmit={handleSubmit(({ name, email, password }) => {
-          mutate({ name: name, email: email, password: password });
-        })}
+        onSubmit={handleSubmit(onSubmit)}
         className="sm:w-[350px] w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white"
       >
         <h1 className="text-gray-900 text-3xl mt-10 font-medium">Login</h1>
@@ -55,8 +70,8 @@ export const LoginPage = () => {
             {...register("email", { required: true })}
             placeholder="Email id"
             type="email"
+            className="outline-none w-full"
             required
-            className=" outline-none  w-full"
           />
         </div>
 
@@ -80,8 +95,8 @@ export const LoginPage = () => {
             {...register("password", { required: true })}
             placeholder="Password"
             type="password"
-            required
             className="border-none outline-none ring-0 w-full"
+            required
           />
         </div>
 
@@ -91,14 +106,13 @@ export const LoginPage = () => {
           </button>
         </div>
 
-        <Link to="/create-resume">
-          <button
-            type="button"
-            className="mt-2 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity cursor-pointer"
-          >
-            Login
-          </button>
-        </Link>
+        <button
+          type="submit"
+          disabled={isPending}
+          className="mt-2 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-60"
+        >
+          {isPending ? "Logging in..." : "Login"}
+        </button>
 
         <p className="text-gray-500 text-sm mt-3 mb-11">
           Don't have an account?{" "}
