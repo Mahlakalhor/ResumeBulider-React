@@ -1,12 +1,20 @@
+import profile1 from "../assets/Media/profile1.jpg";
+import profile6 from "../assets/Media/profile6.jpg";
+import profile3 from "../assets/Media/profile3.jpg";
+import profile4 from "../assets/Media/profile4.jpg";
 import profile5 from "../assets/Media/profile5.jpg";
+
 import { Link } from "react-router-dom";
 import instagram from "../assets/media/instagram.svg";
 import framer from "../assets/media/framer.svg";
 import microsoft from "../assets/media/microsoft.svg";
 import huawei from "../assets/media/huawei.svg";
 import walmart from "../assets/media/walmart.svg";
+import { useAuthStore } from "../store/authStore";
 
 export const Home = () => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   return (
     <div>
       <section
@@ -24,22 +32,22 @@ export const Home = () => {
             <img
               alt="user3"
               className="size-8 object-cover rounded-full border-2 border-white hover:-translate-y-0.5 transition-all z-1"
-              src={profile5}
+              src={profile1}
             ></img>
             <img
               alt="user3"
               className="size-8 object-cover rounded-full border-2 border-white hover:-translate-y-0.5 transition-all z-1"
-              src={profile5}
+              src={profile6}
             ></img>
             <img
               alt="user3"
               className="size-8 object-cover rounded-full border-2 border-white hover:-translate-y-0.5 transition-all z-1"
-              src={profile5}
+              src={profile3}
             ></img>
             <img
               alt="user3"
               className="size-8 object-cover rounded-full border-2 border-white hover:-translate-y-0.5 transition-all z-1"
-              src={profile5}
+              src={profile4}
             ></img>
           </div>
           <div className="flex flex-col">
@@ -137,11 +145,12 @@ export const Home = () => {
         </p>
         <div className="flex items-center gap-4">
           <Link
-            to="/register"
+            to={isAuthenticated ? "/dashboard" : "/register"}
             className="bg-green-500 hover:bg-green-600 text-white rounded-full px-9 h-12 m-1 
                ring-offset-2 ring-1 ring-green-400 flex items-center transition-colors"
           >
-            Get started
+            {isAuthenticated ? "Dashboard" : "Get started"}
+
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

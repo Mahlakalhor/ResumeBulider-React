@@ -1,7 +1,8 @@
-import { Link,useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "../api/axios";
 import { useMutation } from "@tanstack/react-query";
+import { useAuthStore } from "../store/authStore";
 
 type LoginFormType = {
   email: string;
@@ -24,16 +25,14 @@ export const LoginPage = () => {
 
       if (data.token) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("userName", data.user.name);
       }
 
       return data;
     },
     onSuccess: () => {
+      useAuthStore.getState().setAuth(localStorage.getItem("userName")!);
       navigate("/dashboard");
-    },
-    onError: (error) => {
-      console.log(error);
-      alert("Invalid Email or Password");
     },
   });
 

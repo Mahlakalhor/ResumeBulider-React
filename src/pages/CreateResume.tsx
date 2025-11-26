@@ -1,7 +1,9 @@
-import React from 'react'
+import { CreateresumePage } from "../components/CreateresumePage";
 
 export const CreateResume = () => {
   return (
-    <div>CreateResume</div>
-  )
-}
+    <div>
+      <CreateresumePage />
+    </div>
+  );
+};
